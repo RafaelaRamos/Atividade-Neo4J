@@ -141,32 +141,7 @@ public class UsuarioDao implements AutoCloseable {
 
     }
 
-    //Listar publicações dado um determinado usuário
-    public List ListarPublicacao(String email) {
-
-        try (Transaction tx = session.beginTransaction()) {
-
-            List publicacoes = new ArrayList();
-            StatementResult result = tx.run("MATCH (u:Usuario)-[:posta]->(p:Publicacao) "
-                    + "WHERE u.email = $email "
-                    + "RETURN  p.texto ,p.dataHora", parameters("email", email));
-
-            while (result.hasNext()) {
-                Record record = result.next();
-
-                String texto = record.get("p.texto").asString();
-                LocalDateTime dataHora = record.get("p.dataHora").asLocalDateTime();
-                Publicacao p = new Publicacao(texto, dataHora);
-                publicacoes.add(p);
-                tx.success();
-
-            }
-            return publicacoes;
-
-        }
-
-    }
-
+    
     @Override
     public void close() throws Exception {
         session.close();
